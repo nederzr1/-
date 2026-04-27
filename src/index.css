@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  body {
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Reset layout for print */
+  .min-h-screen {
+    min-height: auto !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure table fits horizontally */
+  table {
+    width: 100% !important;
+    table-layout: auto !important;
+    font-size: 8pt !important; /* Slightly smaller for density */
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    padding: 2px 4px !important;
+    word-break: break-word !important;
+    border: 1px solid black !important;
+  }
+
+  /* Hide unnecessary elements */
+  .no-print, button, input[type="file"], .toast {
+    display: none !important;
+  }
+
+  /* Optimize recommendation section */
+  .recommendation-footer {
+    page-break-inside: avoid;
+    margin-top: 20px !important;
+  }
+
+  /* Force landscape if needed via Chrome printing settings but we suggest it here */
+  .print-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* Make inputs look like text */
+  input, textarea {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    font-family: inherit !important;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: transparent !important;
+  }
+
+  /* Hide number arrows */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Comparison Table Validation
+    function isValidComparisonTable(data) {
+      return data.userId is string &&
+             data.userId.size() <= 128 &&
+             data.providers is list &&
+             data.items is list &&
+             (data.subject == null || data.subject is string) &&
+             data.updatedAt == request.time;
+    }
+
+    match /comparison_tables/{tableId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() && 
+                      isValidId(tableId) && 
+                      incoming().userId == request.auth.uid &&
+                      isValidComparisonTable(incoming());
+
+      allow update: if isOwner(existing().userId) && 
+                      incoming().userId == existing().userId &&
+                      isValidComparisonTable(incoming()) &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['providers', 'items', 'subject', 'showRecommendation', 'dateFormat', 'updatedAt']);
+
+      allow delete: if isOwner(existing().userId);
+    }
+  }
+}

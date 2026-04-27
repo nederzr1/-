@@ -1,0 +1,52 @@
+{
+  "entities": {
+    "ComparisonTable": {
+      "title": "Comparison Table",
+      "description": "A dynamic price comparison table with items and providers.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who owns this table."
+        },
+        "subject": {
+          "type": "string",
+          "description": "The subject/title of the comparison."
+        },
+        "providers": {
+          "type": "array",
+          "description": "List of providers."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items and their prices per provider."
+        },
+        "showRecommendation": {
+          "type": "boolean",
+          "description": "Whether to show the recommendation footer."
+        },
+        "dateFormat": {
+          "type": "string",
+          "description": "Preferred date format."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The server timestamp when the table was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "providers",
+        "items",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "comparison_tables/{tableId}": {
+      "schema": "ComparisonTable",
+      "description": "Collection of price comparison tables."
+    }
+  }
+}
